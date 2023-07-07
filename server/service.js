@@ -2,6 +2,7 @@ const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
 const pool = require("../database/db.js"); // import pool from db.js
+const authenticate = require("../auth/authenticate"); // adjust the path to match where your authenticate.js file is
 
 // Define the schema
 const schema = buildSchema(`
@@ -44,6 +45,9 @@ schema.getType("User").getFields().nfts.resolve = async (user) => {
 
 // Create an Express server and a GraphQL endpoint
 const app = express();
+const port = 3000;
+app.use(authenticate);
+
 app.use(
   "/graphql",
   graphqlHTTP({
@@ -53,6 +57,6 @@ app.use(
   })
 );
 
-app.listen(4000, () =>
-  console.log("Express GraphQL Server Now Running On localhost:4000/graphql")
+app.listen(port, () =>
+  console.log(`Express GraphQL Server Now Running On localhost:${port}/graphql`)
 );
